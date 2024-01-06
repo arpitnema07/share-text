@@ -33,9 +33,16 @@ connectDb();
 // Routes
 
 app.post("/share", async (req, res) => {
-  const { title, text } = req.body;
+  const { title, text, key } = req.body;
 
-  if (title == null || title == "" || text == null || text == "") {
+  if (
+    title == null ||
+    title == "" ||
+    text == null ||
+    text == "" ||
+    key == null ||
+    key == ""
+  ) {
     return res.status(401).json(new ErrorRes("Details missing!"));
   }
   try {
@@ -44,6 +51,7 @@ app.post("/share", async (req, res) => {
       _id,
       title,
       text,
+      key,
     });
     const response = await text_.save();
     console.log(response);
@@ -57,12 +65,12 @@ app.post("/share", async (req, res) => {
   }
 });
 
-app.get("/share/:id", async (req, res) => {
+app.get("/share/:key", async (req, res) => {
   try {
-    const textId = req.params.id;
+    const key = req.params.key;
 
     // Find the text in MongoDB using the unique ID
-    const text = await Text.findById(textId);
+    const text = await Text.findOne({ key: key });
 
     if (!text) {
       console.log(error);

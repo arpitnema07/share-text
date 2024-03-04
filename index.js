@@ -32,21 +32,19 @@ connectDb();
 
 // Routes
 
-app.post("/share", async (req, res) => {
-  const { title, text, key } = req.body;
+function getKey() {
+  return Math.floor(1000 + Math.random() * 9000);
+}
 
-  if (
-    title == null ||
-    title == "" ||
-    text == null ||
-    text == "" ||
-    key == null ||
-    key == ""
-  ) {
+app.post("/share", async (req, res) => {
+  const { title, text } = req.body;
+
+  if (text == null || text == "") {
     return res.status(401).json(new ErrorRes("Details missing!"));
   }
   try {
     var _id = new mongoose.Types.ObjectId();
+    var key = getKey();
     const text_ = new Text({
       _id,
       title,
